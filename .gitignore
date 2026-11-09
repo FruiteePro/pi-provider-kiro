@@ -1,5 +1,5 @@
 node_modules/
-dist/
+# dist/ is committed: pi git-installs run with --omit=dev and cannot build
 *.tsbuildinfo
 
 # Agent/tool state
