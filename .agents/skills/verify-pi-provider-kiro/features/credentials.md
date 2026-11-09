@@ -9,7 +9,7 @@ The user gets pi talking to Kiro without a second login when kiro-cli is already
 - Login menu: `/login kiro` → "Select authentication method": `Sign in with an account` / `Sign in with an API key`. Account → "Kiro Login": `Use existing credentials` / `API Key` / `Web Login` / `Device Code`. Only the first is safe to drive: the others start OAuth, open a browser or need a real key.
 - After login pi prints `Logged in to Kiro (Builder ID / Google / GitHub). Credentials saved to <agentDir>/auth.json`, followed by `Error: … no default model is configured for provider "kiro". Use /model to select a model.` That second line is a known UX wart, not a failure.
 - Desktop refresh: an expired social token → `POST prod.<region>.auth.desktop.kiro.dev/refreshToken` → the new access token (and possibly a rotated refresh token) is written back to the kiro-cli DB and `auth.json`.
-- On a runtime 403 the provider shells out to `kiro-cli debug refresh-auth-token`. In the sandbox the `bin/kiro-cli` stub logs this to `evidence/kiro-cli-calls.log` and refuses.
+- Native Pi `/login` credentials recover profile/runtime 403s with their own OAuth refresh grant and are atomically persisted under Pi-compatible locking. CLI-backed calls still have the `kiro-cli debug refresh-auth-token` fallback; the sandbox stub refuses and logs any attempt.
 - External IdP requests carry `tokentype: EXTERNAL_IDP`.
 
 ## How to get to it (user POV)
@@ -40,9 +40,44 @@ Proof (fake): the screens `evidence/tui-login-{1-method,2-options,3-result}.txt`
 
 Proven 2026-10-24 (fake): `~/.cache/verify-pi-provider-kiro/20261024T073914-fake-HLQ1/evidence/` (refresh + write-back), and `…/20261024T073751-fake-n1aZ/evidence/` (unexpired pickup, then chat).
 
+## Native enterprise SSO renewal and 403 recovery (fake only)
+
+Use `scripts/sso-fixture.mjs` to create the credential shape returned by Pi's `/login kiro` → organization/device-code flow. It reads no real credential stores, unlike `sandbox.sh`'s fingerprint/copy steps. The fixture pins the SSO region to Singapore and contains only dummy credentials. This tests renewal/recovery after login, not the browser/device-code sign-in itself.
+
+Drive with Herdr (`hc`), not the real user's Pi terminal:
+
+```bash
+S=.agents/skills/verify-pi-provider-kiro/scripts
+RUN=$(mktemp -d /tmp/kiro-sso-verify-XXXXXX)
+mkdir -p "$RUN/evidence"
+hc run --bg --name sso-fake node "$S/fake-kiro.mjs" 0 sso-profile-403 "$RUN/evidence/fake-kiro-requests.jsonl"
+hc read sso-fake --lines 5                 # get the printed loopback URL
+FAKE=http://127.0.0.1:<printed-port>
+node "$S/sso-fixture.mjs" "$RUN" "$FAKE" "$(command -v pi)" profile
+hc run --bg --name sso-pi "$S/pi.sh '$RUN' --mode json -p --model kiro/claude-sonnet-4-6 'Say hello' </dev/null >'$RUN/evidence/chat.jsonl' 2>'$RUN/evidence/chat.stderr'"
+hc wait sso-pi
+# Judge final assistant stopReason, request log and scratch auth.json together.
+hc kill sso-fake; hc rm sso-fake; hc rm sso-pi
+# This fixture is dummy-only: do NOT use stop.sh (it reads real-store fingerprints).
+rm -rf "$RUN/home" "$RUN/agent"
+```
+
+Variants (each uses a fresh fake/fixture):
+
+| Fake scenario | Fixture variant | Required evidence |
+| --- | --- | --- |
+| `sso-profile-403` | `profile` | both canonical management regions reject the old token → Singapore `/token` → successful profile lookup and chat |
+| `sso-runtime-403` | `runtime` | runtime 403 → Singapore `/token` → successful runtime retry, no CLI invocation |
+| `chat` | `expired` | Pi proactively renews an expired credential before chat |
+| `sso-tool` | `runtime` | runtime 403 → renewal → real Pi executes bash → follow-up uses renewed token and carries tool output |
+
+Every case must end with `stopReason: "stop"`, retain `region: "ap-southeast-1"`, and persist the dummy access/rotated refresh token in the scratch Pi store. Never print credential values. Fake mode is weaker than live; it does not prove that an actual corporate refresh token remains valid or that enterprise session policy permits renewal.
+
+Verified with this worktree build in fake mode: `/tmp/kiro-sso-proof/{profile,runtime,expired,tool}/evidence/`. All four reached a final `stop`; the tool case returned `verify-tool-ran` through a real Pi bash round trip. No live SSO calls were made.
+
 ## Gotchas
 
 - Never select Web Login or Device Code, and never run a real `kiro-cli login`. Both are interactive OAuth and out of scope for agents. `login-cached.sh` refuses to press Enter unless the cursor is on "Use existing credentials".
 - Never print `auth.json` or the DB values. Extract the non-secret fields with `jq`/`json_extract` as above. `stop.sh` scrubs, and deletes `home/` and `agent/`.
 - The live refusal is deliberate. If the person's token is stale, ask them to use Kiro once themselves (their own pi or kiro-cli refreshes their real store), then rerun.
-- IdC and external-IdP refresh are not mapped: the fake has no `oidc …/token` route, and no dummy IdC DB is created.
+- Builder ID, external-IdP refresh and IDE pickup are not mapped. Native enterprise IdC renewal/recovery is mapped above; it uses a dummy Pi auth entry, not a kiro-cli DB.

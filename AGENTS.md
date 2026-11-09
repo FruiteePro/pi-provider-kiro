@@ -61,6 +61,8 @@ HTTP 429 is provider-retried only when its JSON `reason` is exactly `USER_REQUES
 1. kiro-cli SQLite DB — checks social token first (`kirocli:social:token`), then IDC token, then external IdP token (`kirocli:external-idp:token`)
 2. OAuth device code flow (interactive, opens browser)
 
+Native `/login kiro` enterprise SSO owns its own renewal; do not replace it with another cached IDC account. `src/pi-auth-store.ts` handles token-matched 403 recovery, Pi-compatible locking and atomic write-back. Proven token replacements are remembered for long tool loops that keep passing the original `apiKey`; unknown tokens must not adopt a different stored login.
+
 ### Auth Methods
 - `idc`: AWS Builder ID or IAM Identity Center (SSO). Refresh via SSO OIDC endpoint. Token format: `refreshToken|clientId|clientSecret|idc`. Preferred — has clientId/clientSecret for refresh.
 - `desktop`: Google/GitHub social login via Kiro auth service. Refresh via `prod.{region}.auth.desktop.kiro.dev`. Token format: `refreshToken|desktop`

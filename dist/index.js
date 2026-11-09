@@ -877,9 +877,9 @@ var init_config = __esm({
   }
 });
 
-// node_modules/@earendil-works/pi-coding-agent/node_modules/graceful-fs/polyfills.js
+// node_modules/graceful-fs/polyfills.js
 var require_polyfills = __commonJS({
-  "node_modules/@earendil-works/pi-coding-agent/node_modules/graceful-fs/polyfills.js"(exports, module) {
+  "node_modules/graceful-fs/polyfills.js"(exports, module) {
     var constants4 = __require("constants");
     var origCwd = process.cwd;
     var cwd = null;
@@ -1165,9 +1165,9 @@ var require_polyfills = __commonJS({
   }
 });
 
-// node_modules/@earendil-works/pi-coding-agent/node_modules/graceful-fs/legacy-streams.js
+// node_modules/graceful-fs/legacy-streams.js
 var require_legacy_streams = __commonJS({
-  "node_modules/@earendil-works/pi-coding-agent/node_modules/graceful-fs/legacy-streams.js"(exports, module) {
+  "node_modules/graceful-fs/legacy-streams.js"(exports, module) {
     var Stream6 = __require("stream").Stream;
     module.exports = legacy;
     function legacy(fs8) {
@@ -1261,9 +1261,9 @@ var require_legacy_streams = __commonJS({
   }
 });
 
-// node_modules/@earendil-works/pi-coding-agent/node_modules/graceful-fs/clone.js
+// node_modules/graceful-fs/clone.js
 var require_clone = __commonJS({
-  "node_modules/@earendil-works/pi-coding-agent/node_modules/graceful-fs/clone.js"(exports, module) {
+  "node_modules/graceful-fs/clone.js"(exports, module) {
     "use strict";
     module.exports = clone2;
     var getPrototypeOf = Object.getPrototypeOf || function(obj2) {
@@ -1284,9 +1284,9 @@ var require_clone = __commonJS({
   }
 });
 
-// node_modules/@earendil-works/pi-coding-agent/node_modules/graceful-fs/graceful-fs.js
+// node_modules/graceful-fs/graceful-fs.js
 var require_graceful_fs = __commonJS({
-  "node_modules/@earendil-works/pi-coding-agent/node_modules/graceful-fs/graceful-fs.js"(exports, module) {
+  "node_modules/graceful-fs/graceful-fs.js"(exports, module) {
     var fs8 = __require("fs");
     var polyfills = require_polyfills();
     var legacy = require_legacy_streams();
@@ -1654,9 +1654,9 @@ var require_graceful_fs = __commonJS({
   }
 });
 
-// node_modules/@earendil-works/pi-coding-agent/node_modules/proper-lockfile/node_modules/retry/lib/retry_operation.js
+// node_modules/proper-lockfile/node_modules/retry/lib/retry_operation.js
 var require_retry_operation = __commonJS({
-  "node_modules/@earendil-works/pi-coding-agent/node_modules/proper-lockfile/node_modules/retry/lib/retry_operation.js"(exports, module) {
+  "node_modules/proper-lockfile/node_modules/retry/lib/retry_operation.js"(exports, module) {
     function RetryOperation(timeouts, options) {
       if (typeof options === "boolean") {
         options = { forever: options };
@@ -1785,9 +1785,9 @@ var require_retry_operation = __commonJS({
   }
 });
 
-// node_modules/@earendil-works/pi-coding-agent/node_modules/proper-lockfile/node_modules/retry/lib/retry.js
+// node_modules/proper-lockfile/node_modules/retry/lib/retry.js
 var require_retry = __commonJS({
-  "node_modules/@earendil-works/pi-coding-agent/node_modules/proper-lockfile/node_modules/retry/lib/retry.js"(exports) {
+  "node_modules/proper-lockfile/node_modules/retry/lib/retry.js"(exports) {
     var RetryOperation = require_retry_operation();
     exports.operation = function(options) {
       var timeouts = exports.timeouts(options);
@@ -1871,16 +1871,16 @@ var require_retry = __commonJS({
   }
 });
 
-// node_modules/@earendil-works/pi-coding-agent/node_modules/proper-lockfile/node_modules/retry/index.js
+// node_modules/proper-lockfile/node_modules/retry/index.js
 var require_retry2 = __commonJS({
-  "node_modules/@earendil-works/pi-coding-agent/node_modules/proper-lockfile/node_modules/retry/index.js"(exports, module) {
+  "node_modules/proper-lockfile/node_modules/retry/index.js"(exports, module) {
     module.exports = require_retry();
   }
 });
 
-// node_modules/@earendil-works/pi-coding-agent/node_modules/signal-exit/signals.js
+// node_modules/signal-exit/signals.js
 var require_signals = __commonJS({
-  "node_modules/@earendil-works/pi-coding-agent/node_modules/signal-exit/signals.js"(exports, module) {
+  "node_modules/signal-exit/signals.js"(exports, module) {
     module.exports = [
       "SIGABRT",
       "SIGALRM",
@@ -1915,9 +1915,9 @@ var require_signals = __commonJS({
   }
 });
 
-// node_modules/@earendil-works/pi-coding-agent/node_modules/signal-exit/index.js
+// node_modules/signal-exit/index.js
 var require_signal_exit = __commonJS({
-  "node_modules/@earendil-works/pi-coding-agent/node_modules/signal-exit/index.js"(exports, module) {
+  "node_modules/signal-exit/index.js"(exports, module) {
     var process3 = global.process;
     var processOk = function(process4) {
       return process4 && typeof process4 === "object" && typeof process4.removeListener === "function" && typeof process4.emit === "function" && typeof process4.reallyExit === "function" && typeof process4.listeners === "function" && typeof process4.kill === "function" && typeof process4.pid === "number" && typeof process4.on === "function";
@@ -2074,9 +2074,9 @@ var require_signal_exit = __commonJS({
   }
 });
 
-// node_modules/@earendil-works/pi-coding-agent/node_modules/proper-lockfile/lib/mtime-precision.js
+// node_modules/proper-lockfile/lib/mtime-precision.js
 var require_mtime_precision = __commonJS({
-  "node_modules/@earendil-works/pi-coding-agent/node_modules/proper-lockfile/lib/mtime-precision.js"(exports, module) {
+  "node_modules/proper-lockfile/lib/mtime-precision.js"(exports, module) {
     "use strict";
     var cacheSymbol = /* @__PURE__ */ Symbol();
     function probe(file, fs8, callback) {
@@ -2116,9 +2116,9 @@ var require_mtime_precision = __commonJS({
   }
 });
 
-// node_modules/@earendil-works/pi-coding-agent/node_modules/proper-lockfile/lib/lockfile.js
+// node_modules/proper-lockfile/lib/lockfile.js
 var require_lockfile = __commonJS({
-  "node_modules/@earendil-works/pi-coding-agent/node_modules/proper-lockfile/lib/lockfile.js"(exports, module) {
+  "node_modules/proper-lockfile/lib/lockfile.js"(exports, module) {
     "use strict";
     var path9 = __require("path");
     var fs8 = require_graceful_fs();
@@ -2353,9 +2353,9 @@ var require_lockfile = __commonJS({
   }
 });
 
-// node_modules/@earendil-works/pi-coding-agent/node_modules/proper-lockfile/lib/adapter.js
+// node_modules/proper-lockfile/lib/adapter.js
 var require_adapter = __commonJS({
-  "node_modules/@earendil-works/pi-coding-agent/node_modules/proper-lockfile/lib/adapter.js"(exports, module) {
+  "node_modules/proper-lockfile/lib/adapter.js"(exports, module) {
     "use strict";
     var fs8 = require_graceful_fs();
     function createSyncFs(fs9) {
@@ -2418,31 +2418,31 @@ var require_adapter = __commonJS({
   }
 });
 
-// node_modules/@earendil-works/pi-coding-agent/node_modules/proper-lockfile/index.js
+// node_modules/proper-lockfile/index.js
 var require_proper_lockfile = __commonJS({
-  "node_modules/@earendil-works/pi-coding-agent/node_modules/proper-lockfile/index.js"(exports, module) {
+  "node_modules/proper-lockfile/index.js"(exports, module) {
     "use strict";
-    var lockfile6 = require_lockfile();
+    var lockfile7 = require_lockfile();
     var { toPromise, toSync, toSyncOptions } = require_adapter();
     async function lock(file, options) {
-      const release = await toPromise(lockfile6.lock)(file, options);
+      const release = await toPromise(lockfile7.lock)(file, options);
       return toPromise(release);
     }
     function lockSync(file, options) {
-      const release = toSync(lockfile6.lock)(file, toSyncOptions(options));
+      const release = toSync(lockfile7.lock)(file, toSyncOptions(options));
       return toSync(release);
     }
     function unlock(file, options) {
-      return toPromise(lockfile6.unlock)(file, options);
+      return toPromise(lockfile7.unlock)(file, options);
     }
     function unlockSync(file, options) {
-      return toSync(lockfile6.unlock)(file, toSyncOptions(options));
+      return toSync(lockfile7.unlock)(file, toSyncOptions(options));
     }
     function check(file, options) {
-      return toPromise(lockfile6.check)(file, options);
+      return toPromise(lockfile7.check)(file, options);
     }
     function checkSync(file, options) {
-      return toSync(lockfile6.check)(file, toSyncOptions(options));
+      return toSync(lockfile7.check)(file, toSyncOptions(options));
     }
     module.exports = lock;
     module.exports.lock = lock;
@@ -85668,7 +85668,7 @@ var require_gaxios = __commonJS({
     var retry_js_1 = require_retry6();
     var stream_1 = __require("stream");
     var interceptor_js_1 = require_interceptor();
-    var randomUUID4 = async () => globalThis.crypto?.randomUUID() || (await import("crypto")).randomUUID();
+    var randomUUID5 = async () => globalThis.crypto?.randomUUID() || (await import("crypto")).randomUUID();
     var HTTP_STATUS_NO_CONTENT = 204;
     var Gaxios = class {
       agentCache = /* @__PURE__ */ new Map();
@@ -85941,7 +85941,7 @@ var require_gaxios = __commonJS({
          */
         ["Blob", "File", "FormData"].includes(opts.data?.constructor?.name || "");
         if (opts.multipart?.length) {
-          const boundary = await randomUUID4();
+          const boundary = await randomUUID5();
           preparedHeaders.set("content-type", `multipart/related; boundary=${boundary}`);
           opts.body = stream_1.Readable.from(this.getMultipartRequest(opts.multipart, boundary));
         } else if (shouldDirectlyPassData) {
@@ -98099,7 +98099,7 @@ var require_websocket2 = __commonJS({
     var net = __require("net");
     var querystring = __require("querystring");
     var tls = __require("tls");
-    var { randomBytes: randomBytes2, createHash: createHash6 } = __require("crypto");
+    var { randomBytes: randomBytes2, createHash: createHash7 } = __require("crypto");
     var { Duplex, Readable: Readable2 } = __require("stream");
     var { URL: URL2 } = __require("url");
     var PerMessageDeflate2 = require_permessage_deflate2();
@@ -98786,7 +98786,7 @@ var require_websocket2 = __commonJS({
           abortHandshake(websocket, socket, "Invalid Upgrade header");
           return;
         }
-        const digest = createHash6("sha1").update(key + GUID).digest("base64");
+        const digest = createHash7("sha1").update(key + GUID).digest("base64");
         if (res.headers["sec-websocket-accept"] !== digest) {
           abortHandshake(websocket, socket, "Invalid Sec-WebSocket-Accept header");
           return;
@@ -99160,7 +99160,7 @@ var require_websocket_server = __commonJS({
     var EventEmitter = __require("events");
     var http4 = __require("http");
     var { Duplex } = __require("stream");
-    var { createHash: createHash6 } = __require("crypto");
+    var { createHash: createHash7 } = __require("crypto");
     var extension2 = require_extension();
     var PerMessageDeflate2 = require_permessage_deflate2();
     var subprotocol2 = require_subprotocol();
@@ -99467,7 +99467,7 @@ var require_websocket_server = __commonJS({
           );
         }
         if (this._state > RUNNING) return abortHandshake(socket, 503);
-        const digest = createHash6("sha1").update(key + GUID).digest("base64");
+        const digest = createHash7("sha1").update(key + GUID).digest("base64");
         const headers = [
           "HTTP/1.1 101 Switching Protocols",
           "Upgrade: websocket",
@@ -188739,8 +188739,8 @@ async function loginKiroInternal(callbacks, preferredMethod = "auto") {
   const expiredIdeCreds = getKiroIdeCredentialsAllowExpired();
   const expiredCreds = getKiroCliCredentialsAllowExpired2();
   const hasCached = Boolean(ideCreds || cliCreds || expiredIdeCreds || expiredCreds);
-  const { interactiveLogin: interactiveLogin3 } = await Promise.resolve().then(() => (init_login(), login_exports));
-  const result = await interactiveLogin3(callbacks, hasCached);
+  const { interactiveLogin: interactiveLogin2 } = await Promise.resolve().then(() => (init_login(), login_exports));
+  const result = await interactiveLogin2(callbacks, hasCached);
   if (result !== "use-cached-credentials") {
     return result;
   }
@@ -188826,6 +188826,13 @@ async function refreshKiroTokenInternal(credentials) {
   if (credentials.authMethod === "apikey" || isApiKey(credentials.access)) {
     return credentials;
   }
+  const own = credentials;
+  if (credentialAuthMethod === "idc" && (own.isEnterprise || own.startUrl && !builderIdProfileArn(own.startUrl))) {
+    const sharedCli = getKiroCliCredentialsAllowExpired2();
+    const refreshed = await refreshKiroTokenDirect(credentials, AbortSignal.timeout(15e3));
+    if (sharedCli?.refresh === credentials.refresh) saveKiroCliCredentials2(refreshed);
+    return refreshed;
+  }
   if (credentialAuthMethod === "idc") {
     const ideCreds = getKiroIdeCredentials();
     if (ideCreds) return ideCreds;
@@ -188855,7 +188862,7 @@ async function refreshKiroTokenInternal(credentials) {
     throw refreshError;
   }
 }
-async function refreshKiroTokenDirect(credentials) {
+async function refreshKiroTokenDirect(credentials, signal) {
   const parts = credentials.refresh.split("|");
   const refreshToken = parts[0] ?? "";
   const authMethod = parts[parts.length - 1] ?? "idc";
@@ -188867,6 +188874,7 @@ async function refreshKiroTokenDirect(credentials) {
     const url = KIRO_DESKTOP_REFRESH_URL.replace("{region}", region);
     const response2 = await fetch(url, {
       method: "POST",
+      signal,
       headers: { "Content-Type": "application/json", "User-Agent": KIRO_DESKTOP_USER_AGENT },
       body: JSON.stringify({ refreshToken })
     });
@@ -188891,6 +188899,7 @@ async function refreshKiroTokenDirect(credentials) {
     if (!tokenEndpoint) throw new Error("External IdP token refresh: missing token endpoint");
     const response2 = await fetch(tokenEndpoint, {
       method: "POST",
+      signal,
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Accept: "application/json",
@@ -188922,6 +188931,7 @@ async function refreshKiroTokenDirect(credentials) {
   const ssoEndpoint = `https://oidc.${region}.amazonaws.com`;
   const response = await fetch(`${ssoEndpoint}/token`, {
     method: "POST",
+    signal,
     headers: {
       "Content-Type": "application/json",
       ...kiroUserAgent("ssooidc", "E")
@@ -188930,8 +188940,10 @@ async function refreshKiroTokenDirect(credentials) {
   });
   if (!response.ok) throw new Error(`Token refresh failed: ${response.status}`);
   const data = await response.json();
+  if (!data.accessToken) throw new Error("SSO token refresh: missing accessToken");
+  if (!Number.isFinite(data.expiresIn) || data.expiresIn <= 0) throw new Error("SSO token refresh: invalid expiresIn");
   return {
-    refresh: `${data.refreshToken}|${clientId}|${clientSecret}|idc`,
+    refresh: `${data.refreshToken || refreshToken}|${clientId}|${clientSecret}|idc`,
     access: data.accessToken,
     expires: Date.now() + data.expiresIn * 1e3 - 5 * 60 * 1e3,
     clientId,
@@ -189081,8 +189093,8 @@ function getKiroCliCredentialsAllowExpired() {
     return void 0;
   }
 }
-function tryKiroCliToken(dbPath, tokenKey, authMethod, allowExpired = false) {
-  const tokenResult = queryKiroCliDb(dbPath, `SELECT value FROM auth_kv WHERE key = '${tokenKey}'`);
+function tryKiroCliToken(dbPath, tokenKey2, authMethod, allowExpired = false) {
+  const tokenResult = queryKiroCliDb(dbPath, `SELECT value FROM auth_kv WHERE key = '${tokenKey2}'`);
   if (!tokenResult) return void 0;
   const rows = JSON.parse(tokenResult);
   if (!rows[0]?.value) return void 0;
@@ -189125,7 +189137,7 @@ function tryKiroCliToken(dbPath, tokenKey, authMethod, allowExpired = false) {
   }
   let clientId = "";
   let clientSecret = "";
-  const keyPrefix = tokenKey.split(":")[0];
+  const keyPrefix = tokenKey2.split(":")[0];
   const deviceResult = queryKiroCliDb(
     dbPath,
     `SELECT value FROM auth_kv WHERE key = '${keyPrefix}:odic:device-registration'`
@@ -189425,10 +189437,19 @@ init_models5();
 init_oauth3();
 
 // src/pi-auth-store.ts
-import { readFileSync as readFileSync9 } from "node:fs";
+init_oauth3();
+import { createHash as createHash4, randomUUID as randomUUID4 } from "node:crypto";
+import { readFileSync as readFileSync9, renameSync as renameSync3, rmSync as rmSync2, statSync as statSync3, writeFileSync as writeFileSync5 } from "node:fs";
+import { createRequire as createRequire8 } from "node:module";
 import { join as join21 } from "node:path";
 var EXPIRY_BUFFER_MS = 2 * 60 * 1e3;
 function getPiHostKiroCredentials(agentDir = getPiAgentDir()) {
+  return readPiHostKiroCredentials(agentDir, false);
+}
+function getPiHostKiroCredentialsAllowExpired(agentDir = getPiAgentDir()) {
+  return readPiHostKiroCredentials(agentDir, true);
+}
+function readPiHostKiroCredentials(agentDir, allowExpired) {
   let raw;
   try {
     raw = JSON.parse(readFileSync9(join21(agentDir, "auth.json"), "utf-8"));
@@ -189437,10 +189458,91 @@ function getPiHostKiroCredentials(agentDir = getPiAgentDir()) {
   }
   const kiro = asRecord3(asRecord3(raw)?.kiro);
   if (!kiro || typeof kiro.access !== "string" || !kiro.access) return void 0;
-  if (typeof kiro.expires === "number" && Number.isFinite(kiro.expires)) {
+  if (!allowExpired && typeof kiro.expires === "number" && Number.isFinite(kiro.expires)) {
     if (Date.now() >= kiro.expires - EXPIRY_BUFFER_MS) return void 0;
   }
   return kiro;
+}
+var lockfile6 = createRequire8(import.meta.url)("proper-lockfile");
+var pendingRefreshes = /* @__PURE__ */ new Map();
+var recoveredTokens = /* @__PURE__ */ new Map();
+function tokenKey(token, agentDir) {
+  return `${agentDir}:${createHash4("sha256").update(token).digest("hex")}`;
+}
+function getPiHostKiroCredentialsForToken(token, agentDir = getPiAgentDir()) {
+  const current = getPiHostKiroCredentialsAllowExpired(agentDir);
+  if (current && (current.access === token || recoveredTokens.get(tokenKey(token, agentDir)) === current.access)) {
+    return current;
+  }
+  return void 0;
+}
+function rememberReplacement(oldToken, newToken, agentDir) {
+  for (const [key, value] of recoveredTokens) {
+    if (key.startsWith(`${agentDir}:`) && value === oldToken) recoveredTokens.set(key, newToken);
+  }
+  recoveredTokens.set(tokenKey(oldToken, agentDir), newToken);
+  if (recoveredTokens.size > 64) {
+    const oldest = recoveredTokens.keys().next().value;
+    if (oldest !== void 0) recoveredTokens.delete(oldest);
+  }
+}
+async function refreshPiHostKiroCredentials(rejectedToken, agentDir = getPiAgentDir()) {
+  const key = tokenKey(rejectedToken, agentDir);
+  const pending = pendingRefreshes.get(key);
+  if (pending) return pending;
+  const snapshot = getPiHostKiroCredentialsForToken(rejectedToken, agentDir);
+  if (!snapshot?.refresh || snapshot.authMethod === "apikey") return void 0;
+  if (snapshot.access !== rejectedToken && snapshot.expires > Date.now() + EXPIRY_BUFFER_MS) return snapshot;
+  const request2 = (async () => {
+    const authPath = join21(agentDir, "auth.json");
+    let compromised = false;
+    const release = await lockfile6.lock(authPath, {
+      realpath: false,
+      stale: 3e4,
+      retries: { retries: 20, minTimeout: 100, maxTimeout: 2e3 },
+      onCompromised: () => {
+        compromised = true;
+      }
+    });
+    let refreshed;
+    const temporaryPath = `${authPath}.${randomUUID4()}.tmp`;
+    try {
+      let data;
+      try {
+        data = asRecord3(JSON.parse(readFileSync9(authPath, "utf-8")));
+      } catch {
+        throw new Error("Pi Kiro auth file is unreadable; refusing to overwrite it.");
+      }
+      const current = asRecord3(data?.kiro);
+      if (!data || current?.type !== "oauth")
+        throw new Error("Pi Kiro login changed; retry the request with the current login.");
+      if (current.access !== snapshot.access) {
+        if (current.refresh === snapshot.refresh && typeof current.expires === "number" && current.expires > Date.now()) {
+          return current;
+        }
+        throw new Error("Pi Kiro login changed; retry the request with the current login.");
+      }
+      const renewed = await refreshKiroTokenDirect(current, AbortSignal.timeout(15e3));
+      if (compromised) throw new Error("Pi Kiro credential lock was compromised; refusing to overwrite the login.");
+      refreshed = { ...current, ...renewed };
+      data.kiro = { ...refreshed, type: "oauth" };
+      writeFileSync5(temporaryPath, JSON.stringify(data, null, 2), { mode: statSync3(authPath).mode & 511 });
+      renameSync3(temporaryPath, authPath);
+      rememberReplacement(snapshot.access, refreshed.access, agentDir);
+    } finally {
+      rmSync2(temporaryPath, { force: true });
+      await release().catch(() => {
+        console.warn("[pi-provider-kiro] Failed to release the Pi Kiro credential lock.");
+      });
+    }
+    return refreshed;
+  })();
+  pendingRefreshes.set(key, request2);
+  try {
+    return await request2;
+  } finally {
+    if (pendingRefreshes.get(key) === request2) pendingRefreshes.delete(key);
+  }
 }
 function asRecord3(value) {
   return value && typeof value === "object" && !Array.isArray(value) ? value : void 0;
@@ -189448,7 +189550,7 @@ function asRecord3(value) {
 
 // src/stream.ts
 init_dist3();
-import { createHash as createHash5 } from "node:crypto";
+import { createHash as createHash6 } from "node:crypto";
 import { appendFile, mkdir as mkdir2 } from "node:fs/promises";
 import { homedir as homedir10 } from "node:os";
 import { join as join22 } from "node:path";
@@ -190635,7 +190737,7 @@ function addPlaceholderTools(tools, history) {
 }
 
 // src/transform.ts
-import { createHash as createHash4 } from "node:crypto";
+import { createHash as createHash5 } from "node:crypto";
 var TOOL_RESULT_LIMIT = 25e4;
 var EMPTY_CONTENT_PLACEHOLDER = "Please proceed with the task.";
 function sanitizeSurrogates2(text) {
@@ -190651,7 +190753,7 @@ ${text.substring(text.length - half)}`;
 var KIRO_TOOL_USE_ID_PATTERN = /^[a-zA-Z0-9_.:-]{1,64}$/;
 function toKiroToolUseId(toolUseId) {
   if (KIRO_TOOL_USE_ID_PATTERN.test(toolUseId)) return toolUseId;
-  const digest = createHash4("sha256").update(toolUseId).digest("base64url").slice(0, 32);
+  const digest = createHash5("sha256").update(toolUseId).digest("base64url").slice(0, 32);
   return `pi_${digest}`;
 }
 function normalizeMessages(messages) {
@@ -191957,7 +192059,7 @@ function encodeToolNameForDiagnostic(name) {
 function describeDroppedToolNames(names2) {
   const encoded = names2.map((name) => `A-P:${encodeToolNameForDiagnostic(name)}`).join(", ");
   if (encoded.length <= DIAGNOSTIC_QUOTE_LIMIT) return encoded;
-  const digest = createHash5("sha256").update(JSON.stringify(names2)).digest();
+  const digest = createHash6("sha256").update(JSON.stringify(names2)).digest();
   return `A-P-DIGEST:${encodeBytesForDiagnostic(digest)} (tool identities fingerprinted)`;
 }
 var DISCARDED_ONLY_KINDS = /* @__PURE__ */ new Set(["text", "toolCall"]);
@@ -192073,6 +192175,25 @@ function streamKiroWithUsageTracking(usageTracking, model2, context, options) {
       timestamp: Date.now()
     };
     const refreshTrace = [];
+    let nativeRefreshAttempted = false;
+    let hasNativeLogin = false;
+    const recoverNativeCredential = async (rejectedToken) => {
+      try {
+        const creds = await refreshPiHostKiroCredentials(rejectedToken);
+        if (!creds && hasNativeLogin) {
+          throw new Error("Pi Kiro login changed; retry the request with the current login.");
+        }
+        if (creds) {
+          nativeRefreshAttempted = true;
+          refreshTrace.push("refreshed Pi login via its own SSO/OAuth endpoint");
+        }
+        return creds;
+      } catch (error2) {
+        nativeRefreshAttempted = true;
+        refreshTrace.push(`Pi login renewal failed: ${formatSafeError(error2)}`);
+        throw error2;
+      }
+    };
     try {
       const credentialAccessor = options?.credentialAccessor;
       try {
@@ -192082,6 +192203,9 @@ function streamKiroWithUsageTracking(usageTracking, model2, context, options) {
       const seededToken = credentialAccessor?.get?.() || options?.apiKey;
       if (!seededToken) throw new Error("Kiro credentials not set. Run /login kiro or install kiro-cli.");
       let accessToken = seededToken;
+      const nativeCredential = getPiHostKiroCredentialsForToken(accessToken);
+      hasNativeLogin = Boolean(nativeCredential);
+      if (nativeCredential) accessToken = nativeCredential.access;
       const writeBackCredential = (creds, previousToken) => {
         try {
           if (!creds?.access || creds.access === previousToken) return;
@@ -192095,16 +192219,19 @@ function streamKiroWithUsageTracking(usageTracking, model2, context, options) {
       const optionProfileArn = options?.credentials?.profileArn || options?.profileArn;
       const cliCreds = getKiroCliCredentials() ?? getKiroCliCredentialsAllowExpired();
       const cliProfileArn = cliCreds?.access === accessToken ? cliCreds.profileArn : void 0;
-      const initialProfileArn = modelMetadata.kiroProfileArn || optionProfileArn || cliProfileArn;
+      const piCreds = nativeCredential;
+      const piProfileArn = piCreds?.access === accessToken ? piCreds.profileArn : void 0;
+      const initialProfileArn = modelMetadata.kiroProfileArn || optionProfileArn || piProfileArn || cliProfileArn;
       let profileArn;
       try {
         profileArn = initialProfileArn || (skipProfileResolutionForTests ? TEST_PROFILE_ARN : await resolveKiroProfileArn(managementAuth));
       } catch (error2) {
         if (!(error2 instanceof KiroManagementHttpError) || error2.status !== 403) throw error2;
         const rejectedToken = accessToken;
-        const storedCreds = getKiroCliCredentials();
-        const forcedRefresh = !(storedCreds?.access && storedCreds.access !== accessToken);
-        const freshCreds = forcedRefresh ? refreshViaKiroCli() : storedCreds;
+        const nativeCreds = await recoverNativeCredential(rejectedToken);
+        const storedCreds = nativeCreds ? void 0 : getKiroCliCredentials();
+        const forcedRefresh = !nativeCreds && !(storedCreds?.access && storedCreds.access !== accessToken);
+        const freshCreds = nativeCreds ?? (forcedRefresh ? refreshViaKiroCli() : storedCreds);
         if (!freshCreds?.access) {
           refreshTrace.push(
             forcedRefresh ? "profile-403: refresh returned no token" : "profile-403: store had no fresh token"
@@ -192112,7 +192239,7 @@ function streamKiroWithUsageTracking(usageTracking, model2, context, options) {
           throw error2;
         }
         refreshTrace.push(
-          freshCreds.access === rejectedToken ? "profile-403: refreshed token identical (entitlement?)" : forcedRefresh ? "profile-403: refreshed via kiro-cli" : "profile-403: adopted token from store"
+          freshCreds.access === rejectedToken ? "profile-403: refreshed token identical (entitlement?)" : nativeCreds ? "profile-403: refreshed Pi login" : forcedRefresh ? "profile-403: refreshed via kiro-cli" : "profile-403: adopted token from store"
         );
         accessToken = freshCreds.access;
         writeBackCredential(freshCreds, rejectedToken);
@@ -192449,13 +192576,14 @@ ${currentContent}`;
               invalidateKiroProfileArn(managementAuth);
               const rejectedAccessToken = accessToken;
               const rejectedProfileArn = profileArn;
+              const nativeCreds = await recoverNativeCredential(rejectedAccessToken);
               const storedCreds = getKiroCliCredentials();
               const rejectedCliCreds = storedCreds?.access === rejectedAccessToken ? storedCreds : cliCreds?.access === rejectedAccessToken ? cliCreds : void 0;
-              const freshCreds = storedCreds?.access && storedCreds.access !== rejectedAccessToken ? storedCreds : refreshViaKiroCli();
-              const forcedRefresh = !(storedCreds?.access && storedCreds.access !== rejectedAccessToken);
+              const freshCreds = nativeCreds ?? (storedCreds?.access && storedCreds.access !== rejectedAccessToken ? storedCreds : refreshViaKiroCli());
+              const forcedRefresh = !nativeCreds && !(storedCreds?.access && storedCreds.access !== rejectedAccessToken);
               if (freshCreds?.access) accessToken = freshCreds.access;
               refreshTrace.push(
-                !freshCreds?.access ? `runtime-403 #${retryCount}: ${forcedRefresh ? "refresh returned no token" : "store had no fresh token"}` : freshCreds.access === rejectedAccessToken ? `runtime-403 #${retryCount}: refreshed token identical (entitlement?)` : forcedRefresh ? `runtime-403 #${retryCount}: refreshed via kiro-cli` : `runtime-403 #${retryCount}: adopted token from store`
+                !freshCreds?.access ? `runtime-403 #${retryCount}: ${forcedRefresh ? "refresh returned no token" : "store had no fresh token"}` : freshCreds.access === rejectedAccessToken ? `runtime-403 #${retryCount}: refreshed token identical (entitlement?)` : nativeCreds ? `runtime-403 #${retryCount}: refreshed Pi login` : forcedRefresh ? `runtime-403 #${retryCount}: refreshed via kiro-cli` : `runtime-403 #${retryCount}: adopted token from store`
               );
               if (freshCreds?.access) writeBackCredential(freshCreds, rejectedAccessToken);
               managementAuth = { accessToken, region };
@@ -192964,7 +193092,7 @@ ${currentContent}`;
           })
         );
       }
-      if (options?.credentialAccessor && output.stopReason !== "aborted" && refreshTrace.length > 0) {
+      if ((options?.credentialAccessor || nativeRefreshAttempted) && output.stopReason !== "aborted" && refreshTrace.length > 0) {
         output.errorMessage = `${output.errorMessage}
 [auth-refresh] ${refreshTrace.join("; ")}`;
       }

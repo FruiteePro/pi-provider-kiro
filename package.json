@@ -41,7 +41,8 @@
   },
   "dependencies": {
     "@smithy/core": "^3.24.5",
-    "js-tiktoken": "^1.0.21"
+    "js-tiktoken": "^1.0.21",
+    "proper-lockfile": "^4.1.2"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.2",
