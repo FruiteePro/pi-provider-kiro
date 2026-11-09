@@ -4107,7 +4107,14 @@ describe("Feature 9: Streaming Integration", () => {
     const done = events.find((event) => event.type === "done");
     const msg = done?.type === "done" ? done.message : undefined;
 
-    expect(msg?.usage.cost).toEqual({ input: 0, output: 0, cacheRead: 0, cacheWrite: 0, total: 0.12 });
+    expect(msg?.usage.cost).toEqual({
+      input: 0,
+      output: 0,
+      cacheRead: 0,
+      cacheWrite: 0,
+      total: 0.12,
+      totalFromProvider: false,
+    });
   });
 
   it("uses a custom USD-per-credit rate", async () => {

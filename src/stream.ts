@@ -11,6 +11,7 @@ import type {
   AssistantMessageEventStream,
   Context,
   ImageContent,
+  JsonObject,
   Model,
   Message as PiMessage,
   SimpleStreamOptions,
@@ -420,9 +421,9 @@ function emitToolCall(
     state.input = "{}";
   }
 
-  let args: Record<string, unknown>;
+  let args: JsonObject;
   try {
-    args = JSON.parse(state.input) as Record<string, unknown>;
+    args = JSON.parse(state.input) as JsonObject;
   } catch (e) {
     // Returning false drops the call: nothing is pushed into `output.content`,
     // so the call the model made never reaches the agent. Callers record the
@@ -1889,7 +1890,7 @@ function streamKiroWithUsageTracking(
             status: error.status,
             ...(error.reasonCode !== undefined ? { reasonCode: error.reasonCode } : {}),
             ...(error.retryAfterMs !== undefined ? { retryAfterMs: error.retryAfterMs } : {}),
-            ...(error.providerAttempts !== undefined ? { providerAttempts: error.providerAttempts } : {}),
+            ...(error.providerAttempts !== undefined ? { providerAttempts: { ...error.providerAttempts } } : {}),
           }),
         );
       }

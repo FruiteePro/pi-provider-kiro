@@ -24,7 +24,7 @@
     "README.md"
   ],
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --banner:js=\"import{createRequire as __kiroCreateRequire}from'node:module';const require=__kiroCreateRequire(import.meta.url);\" --external:@earendil-works/pi-ai --external:@earendil-works/pi-coding-agent --external:@earendil-works/pi-tui && tsc --emitDeclarationOnly",
+    "build": "esbuild src/index.ts --bundle --platform=node --format=esm --outfile=dist/index.js --banner:js=\"import{createRequire as __kiroCreateRequire}from'node:module';const require=__kiroCreateRequire(import.meta.url);\" && tsc --emitDeclarationOnly",
     "check": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
@@ -43,27 +43,11 @@
     "@smithy/core": "^3.24.5",
     "js-tiktoken": "^1.0.21"
   },
-  "peerDependencies": {
-    "@earendil-works/pi-ai": ">=0.80.10",
-    "@earendil-works/pi-coding-agent": ">=0.80.10",
-    "@earendil-works/pi-tui": ">=0.80.10"
-  },
-  "peerDependenciesMeta": {
-    "@earendil-works/pi-ai": {
-      "optional": true
-    },
-    "@earendil-works/pi-coding-agent": {
-      "optional": true
-    },
-    "@earendil-works/pi-tui": {
-      "optional": true
-    }
-  },
   "devDependencies": {
     "@biomejs/biome": "2.4.2",
-    "@earendil-works/pi-ai": "0.80.10",
-    "@earendil-works/pi-coding-agent": "0.80.10",
-    "@earendil-works/pi-tui": "0.80.10",
+    "@earendil-works/pi-ai": "1.5.0",
+    "@earendil-works/pi-coding-agent": "1.5.0",
+    "@earendil-works/pi-tui": "1.5.0",
     "@smithy/types": "^4.17.2",
     "esbuild": "0.28.2",
     "typescript": "^5.7.0",

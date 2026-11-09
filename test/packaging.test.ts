@@ -81,11 +81,14 @@ describe("published package surface", () => {
     expect(pkg.scripts.build).toMatch(/\brequire\s*=\s*\w*[cC]reateRequire\(import\.meta\.url\)/);
   });
 
-  // The bundle keeps pi's packages external, so they must be resolvable in the
-  // consumer's tree. Declaring them makes that requirement machine-readable
-  // instead of an ERR_MODULE_NOT_FOUND at first import; `optional` keeps npm
-  // from installing a second copy beside the host's own.
-  it("declares every pi host package the bundle imports at runtime", () => {
+  // pi's npm extension layout (`~/.pi/agent/npm/node_modules`) never installs a
+  // host package next to the extension, so a bare runtime import of
+  // `@earendil-works/*` fails ERR_MODULE_NOT_FOUND at load time and the whole
+  // extension silently never registers (observed as
+  // `No API provider registered for api: kiro-api` on the first message). The
+  // build therefore bundles every host value import; nothing may stay
+  // unresolved at runtime.
+  it("bundles every pi host package the sources import at runtime", () => {
     const imported = new Set<string>();
     for (const file of SRC_FILES) {
       for (const specifier of runtimeHostImports(readFileSync(`${repoRoot}src/${file}`, "utf8"))) {
@@ -95,9 +98,15 @@ describe("published package surface", () => {
 
     expect(imported.size).toBeGreaterThan(0);
     for (const specifier of imported) {
-      expect(pkg.peerDependencies ?? {}, `${specifier} is imported but not declared`).toHaveProperty(specifier);
-      expect(pkg.peerDependenciesMeta?.[specifier]?.optional).toBe(true);
+      expect(pkg.scripts.build).not.toContain(`--external:${specifier}`);
     }
+  });
+
+  // The bundle must be fully self-contained: any host bare specifier left in
+  // dist would fail to resolve under pi's npm extension layout.
+  it("leaves no host bare imports in the published bundle", () => {
+    const bundle = readFileSync(`${repoRoot}dist/index.js`, "utf8");
+    expect(bundle).not.toMatch(/from\s*"@earendil-works\//);
   });
 
   // esbuild only produces dist/index.js; nothing in src/ or the bundle imports
@@ -107,12 +116,6 @@ describe("published package surface", () => {
     expect(pkg.dependencies ?? {}).not.toHaveProperty("esbuild");
     expect(pkg.devDependencies?.esbuild).toMatch(/^0\.28\.\d+$/);
     expect(pkg.scripts.build).toMatch(/^esbuild /);
-  });
-
-  it("keeps pi's packages external so the host's own copy is used", () => {
-    for (const specifier of Object.keys(pkg.peerDependencies ?? {})) {
-      expect(pkg.scripts.build).toContain(`--external:${specifier}`);
-    }
   });
 });
 

@@ -64,9 +64,8 @@ export {
   type KiroUserInputMessage,
 } from "./transform.js";
 
-type KiroRefreshModelsContext = Omit<RefreshModelsContext, "credential" | "store"> & {
+type KiroRefreshModelsContext = Omit<RefreshModelsContext, "credential"> & {
   credential?: RefreshModelsContext["credential"] | KiroCredentials;
-  store?: RefreshModelsContext["store"];
 };
 
 type KiroRefreshCredential = KiroRefreshModelsContext["credential"];
@@ -222,7 +221,7 @@ export default function (pi: ExtensionAPI) {
     streamSimple,
   });
 
-  startupCatalogRefresh = refreshCatalog(credential, { allowNetwork: true })
+  startupCatalogRefresh = refreshCatalog(credential, { allowNetwork: true, signal: new AbortController().signal })
     .then(() => {})
     .catch((error) => {
       console.warn(`[pi-provider-kiro] Kiro startup catalog discovery failed: ${formatSafeError(error)}`);

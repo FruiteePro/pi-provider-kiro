@@ -1,6 +1,6 @@
 import { mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname } from "node:path";
-import type { ProviderModelsStore } from "@earendil-works/pi-ai";
+import type { ModelsPublication, ModelsStoreEntry } from "@earendil-works/pi-ai";
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getKiroCliCredentials } from "../src/kiro-cli.js";
@@ -39,12 +39,8 @@ const mockPi = () => {
   return { pi: { registerProvider, on: vi.fn() } as unknown as ExtensionAPI, registerProvider };
 };
 
-/** Minimal host store fixture — refreshKiroModels intentionally uses the Kiro file cache instead. */
-const mockProviderModelsStore = (): ProviderModelsStore => ({
-  read: vi.fn(async () => undefined),
-  write: vi.fn(async () => {}),
-  delete: vi.fn(async () => {}),
-});
+/** Minimal host publish fixture — refreshKiroModels intentionally uses the Kiro file cache instead. */
+const mockPublish = () => vi.fn(async (_publication: ModelsPublication) => true);
 
 const cliOauthCredential = {
   access: "cli-access",
@@ -316,7 +312,8 @@ describe("Feature 1: Extension Registration", () => {
       const models = await (await refreshModels())({
         allowNetwork: true,
         force: true,
-        store: mockProviderModelsStore(),
+        publish: mockPublish(),
+        signal: new AbortController().signal,
       });
 
       expect(fetchMock).not.toHaveBeenCalled();
@@ -333,7 +330,8 @@ describe("Feature 1: Extension Registration", () => {
       const models = await (await refreshModels())({
         allowNetwork: true,
         force: true,
-        store: mockProviderModelsStore(),
+        publish: mockPublish(),
+        signal: new AbortController().signal,
         credential: {
           type: "oauth",
           access: "refresh-access",
@@ -356,7 +354,8 @@ describe("Feature 1: Extension Registration", () => {
       const models = await (await refreshModels())({
         allowNetwork: true,
         force: true,
-        store: mockProviderModelsStore(),
+        publish: mockPublish(),
+        signal: new AbortController().signal,
         credential: { type: "oauth", access: "a", refresh: "r", expires: 0, region: "us-east-1", profileArn: "arn:p" },
       });
 
