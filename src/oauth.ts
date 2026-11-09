@@ -11,7 +11,7 @@ import type { OAuthCredentials, OAuthLoginCallbacks } from "@earendil-works/pi-a
 import { formatSafeError } from "./debug.js";
 import { normalizeRegion, resolveApiRegion } from "./endpoints.js";
 import { getKiroIdeCredentials, getKiroIdeCredentialsAllowExpired } from "./kiro-ide.js";
-import { interactiveLogin, loginViaKiroCli } from "./login.js";
+import { loginViaKiroCli } from "./login.js";
 
 export const SSO_OIDC_ENDPOINT = "https://oidc.us-east-1.amazonaws.com";
 export const BUILDER_ID_START_URL = "https://view.awsapps.com/start";
@@ -311,6 +311,17 @@ async function refreshKiroTokenInternal(credentials: OAuthCredentials): Promise<
     return credentials;
   }
 
+  // Your organization is a distinct SSO session, not whichever IDC account an
+  // IDE or CLI happens to have cached. Its original registration/SSO region owns
+  // renewal. Only write back to CLI when it actually shares this refresh token.
+  const own = credentials as KiroCredentials;
+  if (credentialAuthMethod === "idc" && (own.isEnterprise || (own.startUrl && !builderIdProfileArn(own.startUrl)))) {
+    const sharedCli = getKiroCliCredentialsAllowExpired();
+    const refreshed = await refreshKiroTokenDirect(credentials, AbortSignal.timeout(15_000));
+    if (sharedCli?.refresh === credentials.refresh) saveKiroCliCredentials(refreshed as KiroCredentials);
+    return refreshed;
+  }
+
   // Kiro IDE credentials are IDC credentials. Only consult them for IDC
   // credential refresh — never replace a stored social/desktop session with
   // the IDE's potentially unrelated account (auth-family guard, #142).
@@ -358,7 +369,11 @@ async function refreshKiroTokenInternal(credentials: OAuthCredentials): Promise<
   }
 }
 
-async function refreshKiroTokenDirect(credentials: OAuthCredentials): Promise<OAuthCredentials> {
+/** Refresh only this session; recovery must not substitute a cached account. */
+export async function refreshKiroTokenDirect(
+  credentials: OAuthCredentials,
+  signal?: AbortSignal,
+): Promise<OAuthCredentials> {
   const parts = credentials.refresh.split("|");
   const refreshToken = parts[0] ?? "";
   const authMethod = (parts[parts.length - 1] ?? "idc") as KiroAuthMethod;
@@ -374,6 +389,7 @@ async function refreshKiroTokenDirect(credentials: OAuthCredentials): Promise<OA
     const url = KIRO_DESKTOP_REFRESH_URL.replace("{region}", region);
     const response = await fetch(url, {
       method: "POST",
+      signal,
       headers: { "Content-Type": "application/json", "User-Agent": KIRO_DESKTOP_USER_AGENT },
       body: JSON.stringify({ refreshToken }),
     });
@@ -408,6 +424,7 @@ async function refreshKiroTokenDirect(credentials: OAuthCredentials): Promise<OA
     if (!tokenEndpoint) throw new Error("External IdP token refresh: missing token endpoint");
     const response = await fetch(tokenEndpoint, {
       method: "POST",
+      signal,
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
         Accept: "application/json",
@@ -445,6 +462,7 @@ async function refreshKiroTokenDirect(credentials: OAuthCredentials): Promise<OA
   const ssoEndpoint = `https://oidc.${region}.amazonaws.com`;
   const response = await fetch(`${ssoEndpoint}/token`, {
     method: "POST",
+    signal,
     headers: {
       "Content-Type": "application/json",
       ...kiroUserAgent("ssooidc", "E"),
@@ -452,9 +470,11 @@ async function refreshKiroTokenDirect(credentials: OAuthCredentials): Promise<OA
     body: JSON.stringify({ clientId, clientSecret, refreshToken, grantType: "refresh_token" }),
   });
   if (!response.ok) throw new Error(`Token refresh failed: ${response.status}`);
-  const data = (await response.json()) as { accessToken: string; refreshToken: string; expiresIn: number };
+  const data = (await response.json()) as { accessToken?: string; refreshToken?: string; expiresIn: number };
+  if (!data.accessToken) throw new Error("SSO token refresh: missing accessToken");
+  if (!Number.isFinite(data.expiresIn) || data.expiresIn <= 0) throw new Error("SSO token refresh: invalid expiresIn");
   return {
-    refresh: `${data.refreshToken}|${clientId}|${clientSecret}|idc`,
+    refresh: `${data.refreshToken || refreshToken}|${clientId}|${clientSecret}|idc`,
     access: data.accessToken,
     expires: Date.now() + data.expiresIn * 1000 - 5 * 60 * 1000,
     clientId: clientId,

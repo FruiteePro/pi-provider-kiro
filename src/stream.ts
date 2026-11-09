@@ -55,6 +55,7 @@ import {
 } from "./management.js";
 import { resolveKiroModel } from "./models.js";
 import { kiroAuthHeaders } from "./oauth.js";
+import { getPiHostKiroCredentialsForToken, refreshPiHostKiroCredentials } from "./pi-auth-store.js";
 import {
   capacityRetryConfig,
   exponentialBackoff,
@@ -572,6 +573,25 @@ function streamKiroWithUsageTracking(
     // (refresh returned nothing vs. the refreshed token was itself rejected)
     // instead of invisible on the child's stderr.
     const refreshTrace: string[] = [];
+    let nativeRefreshAttempted = false;
+    let hasNativeLogin = false;
+    const recoverNativeCredential = async (rejectedToken: string) => {
+      try {
+        const creds = await refreshPiHostKiroCredentials(rejectedToken);
+        if (!creds && hasNativeLogin) {
+          throw new Error("Pi Kiro login changed; retry the request with the current login.");
+        }
+        if (creds) {
+          nativeRefreshAttempted = true;
+          refreshTrace.push("refreshed Pi login via its own SSO/OAuth endpoint");
+        }
+        return creds;
+      } catch (error) {
+        nativeRefreshAttempted = true;
+        refreshTrace.push(`Pi login renewal failed: ${formatSafeError(error)}`);
+        throw error;
+      }
+    };
     try {
       // Credential accessor (optional): a mutable getter/setter the host owns so a
       // token refreshed mid-call survives the call. Seeded from the accessor when
@@ -592,6 +612,9 @@ function streamKiroWithUsageTracking(
       const seededToken = credentialAccessor?.get?.() || options?.apiKey;
       if (!seededToken) throw new Error("Kiro credentials not set. Run /login kiro or install kiro-cli.");
       let accessToken: string = seededToken;
+      const nativeCredential = getPiHostKiroCredentialsForToken(accessToken);
+      hasNativeLogin = Boolean(nativeCredential);
+      if (nativeCredential) accessToken = nativeCredential.access;
       // Persist a refreshed credential back to the host, once, only when the token
       // actually changed. Never throws: a classification/persist failure must not
       // fail a turn the refresh just rescued.
@@ -618,7 +641,9 @@ function streamKiroWithUsageTracking(
           ?.profileArn || (options as unknown as { profileArn?: string })?.profileArn;
       const cliCreds = getKiroCliCredentials() ?? getKiroCliCredentialsAllowExpired();
       const cliProfileArn = cliCreds?.access === accessToken ? cliCreds.profileArn : undefined;
-      const initialProfileArn = modelMetadata.kiroProfileArn || optionProfileArn || cliProfileArn;
+      const piCreds = nativeCredential;
+      const piProfileArn = piCreds?.access === accessToken ? piCreds.profileArn : undefined;
+      const initialProfileArn = modelMetadata.kiroProfileArn || optionProfileArn || piProfileArn || cliProfileArn;
       let profileArn: string;
       try {
         profileArn =
@@ -627,14 +652,13 @@ function streamKiroWithUsageTracking(
       } catch (error) {
         if (!(error instanceof KiroManagementHttpError) || error.status !== 403) throw error;
 
-        // The host may have captured an access token before kiro-cli rotated it.
-        // Re-read the shared store first, then force a refresh only when it still
-        // contains the rejected token. Profile discovery must succeed before the
-        // runtime request can be constructed.
+        // Native /login credentials own recovery; only CLI-backed calls need
+        // the legacy CLI fallback. Never substitute another CLI account for SSO.
         const rejectedToken = accessToken;
-        const storedCreds = getKiroCliCredentials();
-        const forcedRefresh = !(storedCreds?.access && storedCreds.access !== accessToken);
-        const freshCreds = forcedRefresh ? refreshViaKiroCli() : storedCreds;
+        const nativeCreds = await recoverNativeCredential(rejectedToken);
+        const storedCreds = nativeCreds ? undefined : getKiroCliCredentials();
+        const forcedRefresh = !nativeCreds && !(storedCreds?.access && storedCreds.access !== accessToken);
+        const freshCreds = nativeCreds ?? (forcedRefresh ? refreshViaKiroCli() : storedCreds);
         if (!freshCreds?.access) {
           refreshTrace.push(
             forcedRefresh ? "profile-403: refresh returned no token" : "profile-403: store had no fresh token",
@@ -644,9 +668,11 @@ function streamKiroWithUsageTracking(
         refreshTrace.push(
           freshCreds.access === rejectedToken
             ? "profile-403: refreshed token identical (entitlement?)"
-            : forcedRefresh
-              ? "profile-403: refreshed via kiro-cli"
-              : "profile-403: adopted token from store",
+            : nativeCreds
+              ? "profile-403: refreshed Pi login"
+              : forcedRefresh
+                ? "profile-403: refreshed via kiro-cli"
+                : "profile-403: adopted token from store",
         );
 
         accessToken = freshCreds.access;
@@ -1128,6 +1154,7 @@ function streamKiroWithUsageTracking(
               invalidateKiroProfileArn(managementAuth);
               const rejectedAccessToken = accessToken;
               const rejectedProfileArn = profileArn;
+              const nativeCreds = await recoverNativeCredential(rejectedAccessToken);
               const storedCreds = getKiroCliCredentials();
               const rejectedCliCreds =
                 storedCreds?.access === rejectedAccessToken
@@ -1136,17 +1163,21 @@ function streamKiroWithUsageTracking(
                     ? cliCreds
                     : undefined;
               const freshCreds: ReturnType<typeof getKiroCliCredentials> =
-                storedCreds?.access && storedCreds.access !== rejectedAccessToken ? storedCreds : refreshViaKiroCli();
-              const forcedRefresh = !(storedCreds?.access && storedCreds.access !== rejectedAccessToken);
+                nativeCreds ??
+                (storedCreds?.access && storedCreds.access !== rejectedAccessToken ? storedCreds : refreshViaKiroCli());
+              const forcedRefresh =
+                !nativeCreds && !(storedCreds?.access && storedCreds.access !== rejectedAccessToken);
               if (freshCreds?.access) accessToken = freshCreds.access;
               refreshTrace.push(
                 !freshCreds?.access
                   ? `runtime-403 #${retryCount}: ${forcedRefresh ? "refresh returned no token" : "store had no fresh token"}`
                   : freshCreds.access === rejectedAccessToken
                     ? `runtime-403 #${retryCount}: refreshed token identical (entitlement?)`
-                    : forcedRefresh
-                      ? `runtime-403 #${retryCount}: refreshed via kiro-cli`
-                      : `runtime-403 #${retryCount}: adopted token from store`,
+                    : nativeCreds
+                      ? `runtime-403 #${retryCount}: refreshed Pi login`
+                      : forcedRefresh
+                        ? `runtime-403 #${retryCount}: refreshed via kiro-cli`
+                        : `runtime-403 #${retryCount}: adopted token from store`,
               );
               // Hand the refreshed credential back to the host so it survives the
               // call. Guarded on a genuine change inside writeBackCredential.
@@ -1900,7 +1931,11 @@ function streamKiroWithUsageTracking(
       // line-oriented classifier still matches the original error grammar on the
       // first line. Without an accessor the message is unchanged. Never on an
       // abort — an aborted turn's refresh history is noise.
-      if (options?.credentialAccessor && output.stopReason !== "aborted" && refreshTrace.length > 0) {
+      if (
+        (options?.credentialAccessor || nativeRefreshAttempted) &&
+        output.stopReason !== "aborted" &&
+        refreshTrace.length > 0
+      ) {
         output.errorMessage = `${output.errorMessage}\n[auth-refresh] ${refreshTrace.join("; ")}`;
       }
       debugLog("response.caught", { stopReason: output.stopReason, error: output.errorMessage, refreshTrace });

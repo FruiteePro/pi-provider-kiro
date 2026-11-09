@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Native `/login kiro` enterprise SSO sessions now recover profile and runtime 403s using their own stored refresh token and SSO region, without requiring kiro-cli. Renewed credentials are atomically written back under Pi-compatible locking, concurrent refreshes are coalesced, and long tool loops stop reusing the rejected token. Normal enterprise SSO renewal no longer substitutes an unrelated IDE/CLI account; non-rotating refresh tokens are preserved, and failed recovery reports a safe diagnostic.
+
 ## [0.12.3] - 2026-10-29
 
 ### Fixed

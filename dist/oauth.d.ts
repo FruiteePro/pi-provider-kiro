@@ -41,3 +41,5 @@ export declare function loginKiro(callbacks: OAuthLoginCallbacks, preferredMetho
  */
 export declare function loginKiroBuilderID(callbacks: OAuthLoginCallbacks): Promise<OAuthCredentials>;
 export declare function refreshKiroToken(credentials: OAuthCredentials): Promise<OAuthCredentials>;
+/** Refresh only this session; recovery must not substitute a cached account. */
+export declare function refreshKiroTokenDirect(credentials: OAuthCredentials, signal?: AbortSignal): Promise<OAuthCredentials>;

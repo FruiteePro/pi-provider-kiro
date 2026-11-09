@@ -57,6 +57,11 @@ const chatReply = {
 
 const SCENARIOS = {
   chat: [chatReply],
+  "sso-profile-403": [chatReply],
+  "sso-runtime-403": [
+    { status: 403, body: { message: "The bearer token included in the request is invalid." } },
+    chatReply,
+  ],
   tool: [
     {
       events: [
@@ -94,6 +99,7 @@ const SCENARIOS = {
   ],
 };
 
+SCENARIOS["sso-tool"] = [SCENARIOS["sso-runtime-403"][0], ...SCENARIOS.tool];
 function loadScript(nameOrPath) {
   const loaded = SCENARIOS[nameOrPath] ?? JSON.parse(readFileSync(nameOrPath, "utf-8"));
   if (!Array.isArray(loaded) || loaded.length === 0) throw new Error(`unknown scenario or empty script: ${nameOrPath}`);
@@ -238,13 +244,27 @@ const server = createServer(async (req, res) => {
       return;
     }
     if (url.pathname === "/generateAssistantResponse") {
+      if (scenarioName === "sso-tool" && served > 0 && req.headers.authorization !== "Bearer verify-sso-new-access") {
+        throw new Error("Tool follow-up reused the rejected SSO token");
+      }
       entry.reply = await generate(req, res, body);
     } else if (url.pathname === "/List-Available-Models") {
       res.writeHead(200, { "content-type": "application/json" });
       res.end(JSON.stringify(CATALOG));
     } else if (url.pathname === "/List-Available-Profiles") {
+      const denied = scenarioName === "sso-profile-403" && req.headers.authorization === "Bearer verify-sso-old-access";
+      res.writeHead(denied ? 403 : 200, { "content-type": "application/json" });
+      res.end(JSON.stringify(denied ? { message: "Expired SSO token (fake)" } : { profiles: [{ arn: FAKE_PROFILE_ARN }] }));
+      entry.reply = { status: denied ? 403 : 200 };
+    } else if (url.pathname === "/token" && /^oidc\.[a-z0-9-]+\.amazonaws\.com$/.test(entry.originalHost ?? "")) {
+      // Fake IAM Identity Center grant. Never record refresh tokens or secrets.
+      entry.body = { ...body, refreshToken: "[REDACTED]", clientSecret: "[REDACTED]" };
+      if (body?.grantType !== "refresh_token" || body?.clientId !== "verify-sso-client") {
+        throw new Error("Unexpected fake SSO grant");
+      }
       res.writeHead(200, { "content-type": "application/json" });
-      res.end(JSON.stringify({ profiles: [{ arn: FAKE_PROFILE_ARN }] }));
+      res.end(JSON.stringify({ accessToken: "verify-sso-new-access", refreshToken: "verify-sso-new-refresh", expiresIn: 3600 }));
+      entry.reply = { status: 200 };
     } else if (url.pathname === "/refreshToken") {
       // Kiro desktop (social) refresh. Dummy values only; rotates the refresh token like the
       // real service may, so a write-back to the scratch kiro-cli DB is observable.
